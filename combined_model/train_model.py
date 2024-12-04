@@ -303,33 +303,7 @@ class PCAKoopman(torch.nn.Module):
         # print(y.shape)
         y = std_layer_err.inverse_transform(y)
         return y
-        
-class PCALayer(nn.Module):
-    def __init__(self, input_dim, output_dim, pca_matrix):
-        super(PCALayer, self).__init__()
-        self.pca_matrix = pca_matrix
-        self.input_dim = input_dim
-        self.output_dim = output_dim
-        self.transform = nn.Linear(input_dim, output_dim, bias = False)
-        self.transform.weight = nn.Parameter(pca_matrix, requires_grad=False)
-        self.inverse_transform = nn.Linear(output_dim, input_dim, bias = False)
-        self.inverse_transform.weight = nn.Parameter(pca_matrix.T, requires_grad=False)
 
-class StdScalerLayer(nn.Module):
-    def __init__(self, mean, std):
-        super(StdScalerLayer, self).__init__()
-        if not isinstance(mean, torch.Tensor):
-            mean = torch.tensor(mean, dtype=torch.float32)
-        if not isinstance(std, torch.Tensor):
-            std = torch.tensor(std, dtype=torch.float32)
-        self.mean = nn.Parameter(mean, requires_grad=False)
-        self.std = nn.Parameter(std, requires_grad=False)
-
-    def transform(self, x):
-        return (x - self.mean) / self.std
-    
-    def inverse_transform(self, input):
-        return input * self.std + self.mean
 
 class State_Encoder(nn.Module):
     "Implements State dictionary"
